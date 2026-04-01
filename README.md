@@ -10,30 +10,39 @@ BAILII blocks requests from cloud servers (Fly.io, AWS, etc.) — they return 40
 
 ## Setup
 
+### Claude Desktop (quickest)
+
 ```bash
+git clone https://github.com/paulieb89/bailii-mcp.git
+cd bailii-mcp
 pip install fastmcp httpx beautifulsoup4
+fastmcp install claude-desktop server.py
 ```
 
-Clone this repo and configure your MCP client:
+That's it. Restart Claude Desktop and the BAILII tools appear automatically.
 
-**Claude Code:**
+### Claude Code
+
 ```bash
-claude mcp add bailii -- python /path/to/server.py --stdio
+git clone https://github.com/paulieb89/bailii-mcp.git
+claude mcp add bailii -- python /full/path/to/bailii-mcp/server.py --stdio
 ```
 
-**Claude Desktop / .mcp.json:**
+### Manual config (.mcp.json or claude_desktop_config.json)
+
 ```json
 {
   "mcpServers": {
     "bailii": {
       "command": "python",
-      "args": ["/path/to/bailii-mcp/server.py", "--stdio"]
+      "args": ["/full/path/to/bailii-mcp/server.py", "--stdio"]
     }
   }
 }
 ```
 
-**HTTP mode** (for testing or other clients):
+### HTTP mode (for testing or other MCP clients)
+
 ```bash
 python server.py
 # Starts on http://localhost:8000/mcp
