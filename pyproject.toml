@@ -1,0 +1,26 @@
+[project]
+name = "bailii-mcp"
+version = "1.0.0"
+description = "Search UK case law on BAILII — court judgments with section extraction. Runs locally (BAILII blocks cloud IPs)."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "Paul Boucherat", email = "paul@bouch.dev" },
+]
+dependencies = [
+    "fastmcp>=3.0",
+    "httpx>=0.27",
+    "beautifulsoup4>=4.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/paulieb89/bailii-mcp"
+Repository = "https://github.com/paulieb89/bailii-mcp"
+
+[project.scripts]
+bailii-mcp = "server:mcp.run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.backends"
