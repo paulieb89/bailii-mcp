@@ -6,13 +6,19 @@ Local MCP server for BAILII case law.
 
 ```bash
 pip install fastmcp httpx beautifulsoup4
-python server.py
 ```
 
-Then in **Claude desktop -> Settings -> Connectors**, add:
+Then configure your MCP client with:
 
-```text
-http://localhost:8000/mcp
+```json
+{
+  "mcpServers": {
+    "bailii": {
+      "command": "/home/bch/company/bouch-pages/idea/.venv/bin/python",
+      "args": ["/home/bch/company/bouch-pages/idea/server.py", "--stdio"]
+    }
+  }
+}
 ```
 
 ## Tools
