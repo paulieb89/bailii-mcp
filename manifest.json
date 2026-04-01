@@ -1,0 +1,28 @@
+{
+  "manifest_version": "0.2",
+  "name": "bailii-mcp",
+  "version": "1.0.0",
+  "description": "Search UK case law on BAILII — court judgments with section extraction. Runs locally (BAILII blocks cloud IPs).",
+  "author": {
+    "name": "Paul Boucherat",
+    "url": "https://bouch.dev"
+  },
+  "homepage": "https://github.com/paulieb89/bailii-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulieb89/bailii-mcp"
+  },
+  "license": "Apache-2.0",
+  "server": {
+    "type": "python",
+    "entry_point": "server.py",
+    "mcp_config": {
+      "command": "python",
+      "args": [
+        "${__dirname}/server.py",
+        "--stdio"
+      ],
+      "env": {}
+    }
+  }
+}
