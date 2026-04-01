@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.paulieb89/bailii-mcp",
+  "title": "BAILII UK Case Law",
+  "description": "Search UK case law on BAILII — court judgments with section extraction. Runs locally.",
+  "version": "1.0.1",
+  "websiteUrl": "https://github.com/paulieb89/bailii-mcp",
+  "repository": {
+    "url": "https://github.com/paulieb89/bailii-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "bailii-mcp",
+      "version": "1.0.1",
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}
