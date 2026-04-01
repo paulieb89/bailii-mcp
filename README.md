@@ -1,119 +1,108 @@
 # BAILII MCP Server
 
-Local MCP server for UK case law on BAILII. Search judgments, retrieve full text with section extraction. Runs locally because BAILII blocks cloud/datacenter IPs.
+Search UK case law on BAILII. Retrieve judgments with automatic section extraction (summary, conclusions, discussion, background). Runs locally — BAILII blocks cloud IPs.
 
-Covers UKSC, EWCA, EWHC, Upper Tribunal, EAT, First-tier Tribunal, and more.
+## Quickstart
 
-## Why Local?
+### Claude Desktop
 
-BAILII blocks requests from cloud servers (Fly.io, AWS, etc.) — they return 403 on all CGI endpoints. This server runs on your machine, so requests go through your residential IP.
+Add to your `claude_desktop_config.json`:
 
-## Setup
+<details>
+<summary>macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></summary>
 
-### Claude Desktop (quickest)
-
-```bash
-git clone https://github.com/paulieb89/bailii-mcp.git
-cd bailii-mcp
-pip install fastmcp httpx beautifulsoup4
-fastmcp install claude-desktop server.py
+```json
+{
+  "mcpServers": {
+    "bailii": {
+      "command": "python3",
+      "args": ["/FULL/PATH/TO/bailii-mcp/server.py", "--stdio"]
+    }
+  }
+}
 ```
+</details>
 
-That's it. Restart Claude Desktop and the BAILII tools appear automatically.
-
-### Claude Code
-
-```bash
-git clone https://github.com/paulieb89/bailii-mcp.git
-claude mcp add bailii -- python /full/path/to/bailii-mcp/server.py --stdio
-```
-
-### Manual config (.mcp.json or claude_desktop_config.json)
+<details>
+<summary>Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code></summary>
 
 ```json
 {
   "mcpServers": {
     "bailii": {
       "command": "python",
-      "args": ["/full/path/to/bailii-mcp/server.py", "--stdio"]
+      "args": ["C:\\FULL\\PATH\\TO\\bailii-mcp\\server.py", "--stdio"]
     }
   }
 }
 ```
+</details>
 
-### HTTP mode (for testing or other MCP clients)
+### Claude Code
 
 ```bash
-python server.py
-# Starts on http://localhost:8000/mcp
+claude mcp add bailii -- python3 /FULL/PATH/TO/bailii-mcp/server.py --stdio
 ```
+
+### Prerequisites
+
+```bash
+git clone https://github.com/paulieb89/bailii-mcp.git
+cd bailii-mcp
+pip install fastmcp httpx beautifulsoup4
+```
+
+Requires Python 3.10+.
+
+## What You Can Ask
+
+Once connected, just ask Claude naturally:
+
+- "Search BAILII for cases about HMO licensing"
+- "Find recent whistleblowing employment tribunal cases"
+- "Get the summary of Chinn v Hoilund-Carlsen"
+- "What did the court hold in that case?"
+- "Show me the discussion section"
 
 ## Tools
 
-| Tool | Description |
-|---|---|
-| `bailii_search` | Full-text search across all BAILII databases. Returns titles, citations, paths, and snippets. |
-| `bailii_get_judgment` | Retrieve judgment text with section extraction. Defaults to summary + conclusions (~5000 chars). |
-| `bailii_list_courts` | List available UK courts with codes and URL patterns. |
+| Tool | What it does |
+|------|-------------|
+| `bailii_search` | Full-text search across all BAILII courts. Returns titles, citations, and links. |
+| `bailii_get_judgment` | Retrieve judgment text. Defaults to summary + conclusions (~5000 chars). |
+| `bailii_list_courts` | List available UK courts (UKSC, EWCA, EWHC, UKUT, EAT, etc). |
 
 ### Section Extraction
 
-`bailii_get_judgment` parses judgment HTML into sections. Default returns only summary + conclusions to avoid flooding the context window.
+Judgments are large (30-100KB). By default, only the summary and conclusions are returned. Ask for more if you need it:
 
-```
-# Default: summary + conclusions (5000 chars max)
-bailii_get_judgment(path="/ew/cases/EWCA/Civ/2026/35.html")
+- **Default**: summary + conclusions (5000 chars)
+- **Specific section**: "show me the discussion" → pulls just that section
+- **Full text**: "get the complete judgment" → returns everything
 
-# Specific section
-bailii_get_judgment(path="...", section="discussion")
-bailii_get_judgment(path="...", section="background")
+Sections detected: `summary`, `conclusions`, `held`, `discussion`, `background`
 
-# Full text (can be very large — 30-100KB)
-bailii_get_judgment(path="...", section="all")
+## Why Local?
 
-# Custom size limit
-bailii_get_judgment(path="...", max_chars=10000)
-```
+BAILII blocks requests from cloud servers and datacenters. This server runs on your machine, so requests go through your residential IP.
 
-Available sections: `summary`, `conclusions`, `held`, `discussion`, `background`
-
-## Example
-
-```
-> Search BAILII for HMO licensing case law
-
-Found 5 results:
-1. Chinn v Hoilund-Carlsen [2026] UKUT 110 (LC) — rent repayment orders, deliberate breach of licensing
-2. Luton Landlords v Luton Borough Council [2026] EWCA Civ 35 — licensing scheme judicial review
-...
-
-> Get the summary of the first case
-
-SUMMARY: The Upper Tribunal considered rent repayment orders where a
-non-professional landlord with a single property deliberately breached
-HMO licensing requirements...
-
-sections_found: ["summary", "background", "discussion", "conclusions"]
-total_chars: 45,230
-returned_chars: 4,800
-```
-
-## Also Available
-
-For case law that doesn't need BAILII specifically, the [uk-legal-mcp](https://github.com/paulieb89/uk-legal-mcp) server provides case law search via the TNA Find Case Law API — hosted on Fly.io, no local setup needed.
+For case law that doesn't need BAILII specifically, [uk-legal-mcp](https://github.com/paulieb89/uk-legal-mcp) provides case law via the National Archives API — hosted on Fly.io, no local setup needed.
 
 This BAILII server is useful when you need:
-- Employment tribunal decisions (EAT coverage is better on BAILII)
+- Employment tribunal decisions (EAT coverage is stronger on BAILII)
 - Older cases not yet in the TNA database
-- Specific courts or tribunals with better BAILII indexing
+- Specific tribunals with better BAILII indexing
 
 ## Notes
 
-- BAILII terms prohibit bulk downloading — use for targeted research
+- BAILII terms prohibit bulk downloading — use for targeted research only
 - Be reasonable with request rate
-- For systematic access use TNA Find Case Law API instead (in uk-legal-mcp)
 - Section extraction depends on judgment formatting — not all judgments have clear section headers
 
 ## Licence
 
 Apache 2.0
+
+## Author
+
+[Paul Boucherat](https://bouch.dev) — building MCP servers for UK property, legal, and project controls.
