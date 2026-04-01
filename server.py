@@ -14,7 +14,7 @@ Then add http://localhost:8000/mcp as a connector in Claude desktop.
 import json
 import re
 from typing import Optional
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 
 import httpx
 from bs4 import BeautifulSoup
@@ -64,9 +64,7 @@ mcp = FastMCP("bailii_mcp")
 
 async def _fetch_html(url: str, params: Optional[dict] = None) -> str:
     """Fetch a URL and return raw HTML. Raises on HTTP errors."""
-    async with httpx.AsyncClient(
-        headers=HEADERS, timeout=30.0, follow_redirects=True
-    ) as client:
+    async with httpx.AsyncClient(headers=HEADERS, timeout=30.0, follow_redirects=True) as client:
         response = await client.get(url, params=params)
         response.raise_for_status()
         return response.text
@@ -104,7 +102,7 @@ def _handle_error(e: Exception) -> str:
             return "Error 404: Page not found. Check the case citation or URL."
         return f"Error: HTTP {e.response.status_code} from BAILII."
     if isinstance(e, httpx.TimeoutException):
-        return "Error: Request timed out. BAILII may be slow - try again."
+        return "Error: Request timed out. BAILII may be slow — try again."
     if isinstance(e, httpx.ConnectError):
         return "Error: Could not connect to BAILII. Check your internet connection."
     return f"Error: {type(e).__name__}: {e}"
@@ -153,10 +151,7 @@ class GetJudgmentInput(BaseModel):
     )
     max_chars: Optional[int] = Field(
         default=None,
-        description=(
-            "Maximum characters to return. Default 5000 unless section='all'. "
-            "Increase if you need more context."
-        ),
+        description="Maximum characters to return. Default 5000 unless section='all'. Increase if you need more context.",
         ge=500,
         le=200000,
     )
@@ -251,37 +246,29 @@ async def bailii_search(params: SearchInput) -> str:
             path = href
             url = urljoin(BAILII_BASE, href)
 
-        results.append(
-            {
-                "title": title,
-                "path": path,
-                "url": url,
-                "snippet": snippet,
-            }
-        )
+        results.append({
+            "title": title,
+            "path": path,
+            "url": url,
+            "snippet": snippet,
+        })
 
         if len(results) >= params.max_results:
             break
 
     if not results:
-        return json.dumps(
-            {
-                "query": params.query,
-                "count": 0,
-                "results": [],
-                "note": "No results found. Try broader search terms.",
-            },
-            indent=2,
-        )
-
-    return json.dumps(
-        {
+        return json.dumps({
             "query": params.query,
-            "count": len(results),
-            "results": results,
-        },
-        indent=2,
-    )
+            "count": 0,
+            "results": [],
+            "note": "No results found. Try broader search terms.",
+        }, indent=2)
+
+    return json.dumps({
+        "query": params.query,
+        "count": len(results),
+        "results": results,
+    }, indent=2)
 
 
 @mcp.tool(
@@ -336,8 +323,7 @@ async def bailii_get_judgment(params: GetJudgmentInput) -> str:
 
     lines = text.splitlines()
     cleaned = [
-        line
-        for line in lines
+        line for line in lines
         if not re.match(r"^\s*(BAILII|Copyright|Feedback|Donate|URL:)\s*", line)
     ]
     full_text = "\n".join(cleaned).strip()
@@ -345,13 +331,9 @@ async def bailii_get_judgment(params: GetJudgmentInput) -> str:
     # Parse sections from the judgment text
     section_patterns = {
         "summary": re.compile(r"\bSUMMARY\b", re.IGNORECASE),
-        "background": re.compile(
-            r"\bBACKGROUND\b|\bINTRODUCTION\b|\bFACTS\b", re.IGNORECASE
-        ),
+        "background": re.compile(r"\bBACKGROUND\b|\bINTRODUCTION\b|\bFACTS\b", re.IGNORECASE),
         "discussion": re.compile(r"\bDISCUSSION\b|\bANALYSIS\b|\bREASONS\b", re.IGNORECASE),
-        "conclusions": re.compile(
-            r"\bCONCLUSIONS?\b|\bHELD\b|\bDECISION\b|\bORDER\b", re.IGNORECASE
-        ),
+        "conclusions": re.compile(r"\bCONCLUSIONS?\b|\bHELD\b|\bDECISION\b|\bORDER\b", re.IGNORECASE),
         "held": re.compile(r"\bHELD\b", re.IGNORECASE),
     }
 
@@ -362,16 +344,14 @@ async def bailii_get_judgment(params: GetJudgmentInput) -> str:
         for i, line in enumerate(section_lines):
             stripped = line.strip()
             if len(stripped) < 80 and pattern.search(stripped):
-                # Found a section header. Grab text until next section header or end.
+                # Found a section header — grab text until next section header or end
                 start = i + 1
                 end = len(section_lines)
                 for j in range(start + 1, len(section_lines)):
                     next_line = section_lines[j].strip()
-                    if (
-                        len(next_line) < 80
-                        and any(p.search(next_line) for p in section_patterns.values())
-                        and j > start + 2
-                    ):
+                    if len(next_line) < 80 and any(
+                        p.search(next_line) for p in section_patterns.values()
+                    ) and j > start + 2:
                         end = j
                         break
                 section_text = "\n".join(section_lines[start:end]).strip()
@@ -389,11 +369,7 @@ async def bailii_get_judgment(params: GetJudgmentInput) -> str:
     elif requested_section and requested_section in sections_found:
         output_text = sections_found[requested_section]
     elif requested_section:
-        output_text = (
-            f"Section '{requested_section}' not found. Available sections: "
-            f"{', '.join(sections_found.keys()) or 'none detected'}.\n\n"
-            f"{full_text[:default_max]}"
-        )
+        output_text = f"Section '{requested_section}' not found. Available sections: {', '.join(sections_found.keys()) or 'none detected'}.\n\n" + full_text[:default_max]
     else:
         # Default: summary + conclusions, or first N chars
         parts = []
@@ -413,19 +389,16 @@ async def bailii_get_judgment(params: GetJudgmentInput) -> str:
     truncated = len(output_text) > max_chars
     output_text = output_text[:max_chars]
 
-    return json.dumps(
-        {
-            "path": path,
-            "url": url,
-            "title": title,
-            "sections_found": list(sections_found.keys()),
-            "truncated": truncated,
-            "total_chars": len(full_text),
-            "returned_chars": len(output_text),
-            "text": output_text,
-        },
-        indent=2,
-    )
+    return json.dumps({
+        "path": path,
+        "url": url,
+        "title": title,
+        "sections_found": list(sections_found.keys()),
+        "truncated": truncated,
+        "total_chars": len(full_text),
+        "returned_chars": len(output_text),
+        "text": output_text,
+    }, indent=2)
 
 
 @mcp.tool(
@@ -447,16 +420,13 @@ async def bailii_list_courts() -> str:
     Returns:
         str: JSON object mapping court codes to court names.
     """
-    return json.dumps(
-        {
-            "courts": COURT_CODES,
-            "note": (
-                "BAILII URL pattern: https://www.bailii.org/ew/cases/{COURT}/{YEAR}/{NUMBER}.html "
-                "e.g. https://www.bailii.org/uk/cases/UKSC/2024/1.html"
-            ),
-        },
-        indent=2,
-    )
+    return json.dumps({
+        "courts": COURT_CODES,
+        "note": (
+            "BAILII URL pattern: https://www.bailii.org/ew/cases/{COURT}/{YEAR}/{NUMBER}.html "
+            "e.g. https://www.bailii.org/uk/cases/UKSC/2024/1.html"
+        ),
+    }, indent=2)
 
 
 # ---------------------------------------------------------------------------
@@ -464,9 +434,7 @@ async def bailii_list_courts() -> str:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    import os
-    import sys
-
+    import os, sys
     if "--stdio" in sys.argv:
         mcp.run()
     else:
