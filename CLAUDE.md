@@ -6,20 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 bailii-mcp is a local MCP server that gives Claude access to BAILII (British and Irish Legal Information Institute) case law. It must run locally because BAILII blocks cloud/datacenter IPs.
 
-Single-file server: all logic lives in `server.py` (~445 lines). No package structure, no test suite.
+Single-file server: all logic lives in `bailii_mcp.py` (~445 lines). No package structure, no test suite.
 
 ## Running
 
 ```bash
-# Install dependencies (Python 3.10+)
-pip install fastmcp httpx beautifulsoup4
+# Install from PyPI
+pip install bailii-mcp
 
 # Run in stdio mode (Claude Desktop / Claude Code)
-python3 server.py --stdio
+bailii-mcp --stdio
 
 # Run as HTTP server for local dev/testing
-python3 server.py              # default port 8000
-PORT=9000 python3 server.py    # custom port
+bailii-mcp                        # default port 8000
+PORT=9000 bailii-mcp              # custom port
+
+# Or run directly from source
+python3 bailii_mcp.py --stdio
 ```
 
 ## Architecture
@@ -41,5 +44,5 @@ PORT=9000 python3 server.py    # custom port
 
 - BAILII terms prohibit bulk downloading — tool is for targeted research only
 - 403 errors usually mean the server is running on a cloud IP instead of locally
-- No pyproject.toml or setup.py — dependencies declared in `fastmcp.json` only
+- Published on PyPI as `bailii-mcp` — dependencies in `pyproject.toml`
 - The `.mcpb` bundle is a pre-built ZIP for one-click Claude Desktop install

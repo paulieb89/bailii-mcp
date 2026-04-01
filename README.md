@@ -1,58 +1,79 @@
 # BAILII MCP Server
 
+<!-- mcp-name: io.github.paulieb89/bailii-mcp -->
+
 Search UK case law on BAILII. Retrieve judgments with automatic section extraction (summary, conclusions, discussion, background). Runs locally — BAILII blocks cloud IPs.
 
-## Quickstart
+## Install
+
+### Using uv (recommended)
+
+No install needed — [`uvx`](https://docs.astral.sh/uv/) runs it directly from PyPI:
+
+```bash
+uvx bailii-mcp --stdio
+```
+
+### Using pip
+
+```bash
+pip install bailii-mcp
+bailii-mcp --stdio
+```
+
+Requires Python 3.10+.
+
+## Configuration
 
 ### Claude Desktop
 
 Add to your `claude_desktop_config.json`:
 
-<details>
-<summary>macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></summary>
-
 ```json
 {
   "mcpServers": {
     "bailii": {
-      "command": "python3",
-      "args": ["/FULL/PATH/TO/bailii-mcp/server.py", "--stdio"]
+      "command": "uvx",
+      "args": ["bailii-mcp", "--stdio"]
     }
   }
 }
 ```
-</details>
-
-<details>
-<summary>Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code></summary>
-
-```json
-{
-  "mcpServers": {
-    "bailii": {
-      "command": "python",
-      "args": ["C:\\FULL\\PATH\\TO\\bailii-mcp\\server.py", "--stdio"]
-    }
-  }
-}
-```
-</details>
 
 ### Claude Code
 
 ```bash
-claude mcp add bailii -- python3 /FULL/PATH/TO/bailii-mcp/server.py --stdio
+claude mcp add bailii -- uvx bailii-mcp --stdio
 ```
 
-### Prerequisites
+### VS Code
+
+Add to `.vscode/settings.json` or use the MCP panel:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "bailii": {
+        "command": "uvx",
+        "args": ["bailii-mcp", "--stdio"]
+      }
+    }
+  }
+}
+```
+
+### Using pip instead of uvx
+
+If you installed via `pip install bailii-mcp`, replace `"command": "uvx"` and `"args": ["bailii-mcp", "--stdio"]` with `"command": "bailii-mcp"` and `"args": ["--stdio"]`.
+
+### From source
 
 ```bash
 git clone https://github.com/paulieb89/bailii-mcp.git
 cd bailii-mcp
-pip install fastmcp httpx beautifulsoup4
+pip install -e .
 ```
-
-Requires Python 3.10+.
 
 ## What You Can Ask
 

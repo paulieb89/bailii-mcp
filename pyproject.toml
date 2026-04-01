@@ -1,6 +1,6 @@
 [project]
 name = "bailii-mcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "Search UK case law on BAILII — court judgments with section extraction. Runs locally (BAILII blocks cloud IPs)."
 readme = "README.md"
 license = "Apache-2.0"
@@ -19,8 +19,11 @@ Homepage = "https://github.com/paulieb89/bailii-mcp"
 Repository = "https://github.com/paulieb89/bailii-mcp"
 
 [project.scripts]
-bailii-mcp = "server:mcp.run"
+bailii-mcp = "bailii_mcp:main"
 
 [build-system]
 requires = ["hatchling"]
-build-backend = "hatchling.backends"
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["bailii_mcp.py"]

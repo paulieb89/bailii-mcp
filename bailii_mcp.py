@@ -5,10 +5,11 @@ Run from your own machine so requests go out via your residential IP,
 bypassing BAILII's cloud IP blocks.
 
 Usage:
-    pip install fastmcp httpx beautifulsoup4
-    python server.py
+    pip install bailii-mcp
+    bailii-mcp --stdio
 
-Then add http://localhost:8000/mcp as a connector in Claude desktop.
+Or run the HTTP server:
+    bailii-mcp
 """
 
 import json
@@ -433,7 +434,7 @@ async def bailii_list_courts() -> str:
 # Entry point
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
+def main():
     import os, sys
     if "--stdio" in sys.argv:
         mcp.run()
@@ -442,3 +443,7 @@ if __name__ == "__main__":
         print(f"Starting bailii_mcp on http://localhost:{port}")
         print(f"Add http://localhost:{port}/mcp as a connector in Claude desktop.")
         mcp.run(transport="streamable-http", host="127.0.0.1", port=port)
+
+
+if __name__ == "__main__":
+    main()

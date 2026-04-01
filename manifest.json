@@ -15,11 +15,11 @@
   "license": "Apache-2.0",
   "server": {
     "type": "python",
-    "entry_point": "server.py",
+    "entry_point": "bailii_mcp.py",
     "mcp_config": {
       "command": "python",
       "args": [
-        "${__dirname}/server.py",
+        "${__dirname}/bailii_mcp.py",
         "--stdio"
       ],
       "env": {}
