@@ -11,14 +11,14 @@ Search UK case law on BAILII. Retrieve judgments with automatic section extracti
 No install needed — [`uvx`](https://docs.astral.sh/uv/) runs it directly from PyPI:
 
 ```bash
-uvx bailii-mcp --stdio
+uvx bailii-mcp
 ```
 
 ### Using pip
 
 ```bash
 pip install bailii-mcp
-bailii-mcp --stdio
+bailii-mcp
 ```
 
 Requires Python 3.10+.
@@ -34,7 +34,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "bailii": {
       "command": "uvx",
-      "args": ["bailii-mcp", "--stdio"]
+      "args": ["bailii-mcp"]
     }
   }
 }
@@ -43,7 +43,7 @@ Add to your `claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add bailii -- uvx bailii-mcp --stdio
+claude mcp add bailii -- uvx bailii-mcp
 ```
 
 ### VS Code
@@ -56,7 +56,7 @@ Add to `.vscode/settings.json` or use the MCP panel:
     "servers": {
       "bailii": {
         "command": "uvx",
-        "args": ["bailii-mcp", "--stdio"]
+        "args": ["bailii-mcp"]
       }
     }
   }
@@ -65,7 +65,7 @@ Add to `.vscode/settings.json` or use the MCP panel:
 
 ### Using pip instead of uvx
 
-If you installed via `pip install bailii-mcp`, replace `"command": "uvx"` and `"args": ["bailii-mcp", "--stdio"]` with `"command": "bailii-mcp"` and `"args": ["--stdio"]`.
+If you installed via `pip install bailii-mcp`, use `"command": "bailii-mcp"` and `"args": []` instead.
 
 ### From source
 

@@ -14,15 +14,15 @@ Single-file server: all logic lives in `bailii_mcp.py` (~445 lines). No package 
 # Install from PyPI
 pip install bailii-mcp
 
-# Run in stdio mode (Claude Desktop / Claude Code)
-bailii-mcp --stdio
+# Run in stdio mode (default — Claude Desktop / Claude Code)
+bailii-mcp
 
 # Run as HTTP server for local dev/testing
-bailii-mcp                        # default port 8000
-PORT=9000 bailii-mcp              # custom port
+bailii-mcp --http                 # default port 8000
+PORT=9000 bailii-mcp --http       # custom port
 
 # Or run directly from source
-python3 bailii_mcp.py --stdio
+python3 bailii_mcp.py
 ```
 
 ## Architecture
@@ -38,7 +38,7 @@ python3 bailii_mcp.py --stdio
 
 **Section extraction**: Detects headers by matching short lines (<80 chars) against regex patterns. Returns summary + conclusions by default, or a specific section on request. Falls back to first 5000 chars if no sections detected.
 
-**Entry point**: `__main__` block checks for `--stdio` flag — stdio mode for MCP protocol, HTTP mode otherwise.
+**Entry point**: `main()` runs in stdio mode (MCP protocol) by default.
 
 ## Key constraints
 

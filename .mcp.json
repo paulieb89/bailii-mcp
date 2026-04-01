@@ -2,7 +2,7 @@
   "mcpServers": {
     "bailii": {
       "command": "uvx",
-      "args": ["bailii-mcp", "--stdio"]
+      "args": ["bailii-mcp"]
     }
   }
 }

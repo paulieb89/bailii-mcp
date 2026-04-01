@@ -6,10 +6,8 @@ bypassing BAILII's cloud IP blocks.
 
 Usage:
     pip install bailii-mcp
-    bailii-mcp --stdio
-
-Or run the HTTP server:
-    bailii-mcp
+    bailii-mcp              # stdio mode (default)
+    bailii-mcp --http       # HTTP server for dev/testing
 """
 
 import json
@@ -436,13 +434,13 @@ async def bailii_list_courts() -> str:
 
 def main():
     import os, sys
-    if "--stdio" in sys.argv:
-        mcp.run()
-    else:
+    if "--http" in sys.argv:
         port = int(os.getenv("PORT", "8000"))
         print(f"Starting bailii_mcp on http://localhost:{port}")
         print(f"Add http://localhost:{port}/mcp as a connector in Claude desktop.")
         mcp.run(transport="streamable-http", host="127.0.0.1", port=port)
+    else:
+        mcp.run()
 
 
 if __name__ == "__main__":
