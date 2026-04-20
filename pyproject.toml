@@ -1,6 +1,6 @@
 [project]
 name = "bailii-mcp"
-version = "1.0.1"
+version = "1.0.2"
 description = "Search UK case law on BAILII — court judgments with section extraction. Runs locally (BAILII blocks cloud IPs)."
 readme = "README.md"
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ authors = [
     { name = "Paul Boucherat", email = "paul@bouch.dev" },
 ]
 dependencies = [
-    "fastmcp>=3.0",
+    "fastmcp==3.2.4",
     "httpx>=0.27",
     "beautifulsoup4>=4.12",
 ]
