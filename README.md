@@ -2,6 +2,9 @@
 
 <!-- mcp-name: io.github.paulieb89/bailii-mcp -->
 
+[![PyPI](https://img.shields.io/pypi/v/bailii-mcp)](https://pypi.org/project/bailii-mcp/)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Local-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=bailii&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22bailii-mcp%22%5D%7D)
+
 Search UK case law on BAILII. Retrieve judgments with automatic section extraction (summary, conclusions, discussion, background). Runs locally — BAILII blocks cloud IPs.
 
 ## Install

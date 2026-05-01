@@ -432,6 +432,27 @@ async def bailii_list_courts() -> str:
 # Entry point
 # ---------------------------------------------------------------------------
 
+@mcp.custom_route("/.well-known/mcp/server-card.json", methods=["GET"])
+async def smithery_server_card(request):
+    from starlette.responses import JSONResponse
+    return JSONResponse({"serverInfo": {"name": "bailii-mcp", "version": "1.0.2"}})
+
+
+@mcp.custom_route("/.well-known/glama.json", methods=["GET"])
+async def glama_claim(request):
+    from starlette.responses import JSONResponse
+    return JSONResponse({
+        "$schema": "https://glama.ai/mcp/schemas/connector.json",
+        "maintainers": [{"email": "paul@bouch.dev"}],
+    })
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    from starlette.responses import JSONResponse
+    return JSONResponse({"status": "healthy"})
+
+
 def main():
     import os, sys
     if "--http" in sys.argv:
