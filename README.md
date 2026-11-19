@@ -1,5 +1,7 @@
 # BAILII MCP Server
 
+Maintained by BOUCH — private hosting, custom tools and setup: paul@bouch.dev · [bouch.dev/products/bailii-mcp](https://bouch.dev/products/bailii-mcp)
+
 <!-- mcp-name: io.github.paulieb89/bailii-mcp -->
 
 [![PyPI](https://img.shields.io/pypi/v/bailii-mcp)](https://pypi.org/project/bailii-mcp/)
